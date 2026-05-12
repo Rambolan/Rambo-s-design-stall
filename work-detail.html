@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>作品详情 - 兰博的设计小摊</title>
+  <style>
+    /* ========== Reset & Base ========== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      color: #333;
+      background: #f0f2f5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* ========== Top Navigation ========== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      height: 68px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    }
+    .navbar__logo {
+      display: flex; align-items: center; gap: 12px;
+      font-weight: 700; font-size: 20px; color: #111;
+    }
+    .navbar__logo-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      overflow: hidden;
+    }
+    .navbar__logo-icon img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .navbar__title {
+      font-size: 20px; font-weight: 700; color: #1a1a2e;
+      letter-spacing: 0.5px;
+    }
+
+    /* ========== PC Nav Menu (Horizontal) ========== */
+    .nav__menu {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav__menu-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 15px; font-weight: 500; color: #555;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .nav__menu-item:hover {
+      background: #f3f0ff;
+      color: #6366f1;
+    }
+    .nav__menu-item .menu-icon {
+      width: 18px; height: 18px;
+      display: flex; align-items: center; justify-content: center;
+      color: #6366f1;
+    }
+
+    /* ========== Mobile Hamburger (hidden on PC) ========== */
+    .navbar__hamburger {
+      display: none;
+      width: 44px; height: 44px; border: none; background: none;
+      cursor: pointer; flex-direction: column;
+      align-items: center; justify-content: center; gap: 6px;
+      border-radius: 12px; transition: background 0.2s;
+    }
+    .navbar__hamburger:hover { background: #f0f0f5; }
+    .navbar__hamburger span {
+      display: block; width: 24px; height: 2.5px;
+      background: #333; border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .navbar__hamburger.active span:nth-child(1) {
+      transform: translateY(8.5px) rotate(45deg);
+    }
+    .navbar__hamburger.active span:nth-child(2) { opacity: 0; }
+    .navbar__hamburger.active span:nth-child(3) {
+      transform: translateY(-8.5px) rotate(-45deg);
+    }
+
+    /* ========== Dropdown Menu ========== */
+    .dropdown-menu {
+      position: fixed; top: 68px; right: 40px; z-index: 999;
+      width: 240px;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04);
+      padding: 10px;
+      opacity: 0; visibility: hidden;
+      transform: translateY(-12px) scale(0.96);
+      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .dropdown-menu.show {
+      opacity: 1; visibility: visible; transform: translateY(0) scale(1);
+    }
+    .dropdown-menu__item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 13px 18px;
+      border-radius: 12px;
+      font-size: 16px; color: #333; font-weight: 500;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .dropdown-menu__item:hover { background: #f3f0ff; color: #6366f1; }
+    .dropdown-menu__item .menu-icon {
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      color: #6366f1;
+    }
+
+    /* ========== Detail Content ========== */
+    .detail-hero {
+      margin-top: 68px;
+      width: 100%;
+    }
+
+    .detail-container {
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 32px 48px 60px 48px;
+    }
+
+    /* Back Button */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.8);
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
+      backdrop-filter: blur(8px);
+      align-self: flex-start;
+      margin-bottom: 20px;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      transform: translateX(-4px);
+    }
+    .back-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Work Detail Card - Hero Style */
+    .work-detail-card {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      border-radius: 0 0 24px 24px;
+      padding: 32px 0 48px 0;
+      margin-bottom: 0;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+    }
+    .work-detail-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 75%, rgba(99,102,241,0.18) 0%, transparent 50%),
+        radial-gradient(circle at 85% 15%, rgba(168,85,247,0.12) 0%, transparent 50%);
+      z-index: 0;
+    }
+    .work-detail-card__inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 48px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    .work-detail-card__header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 0;
+    }
+    .work-info__title {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.3;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    /* Meta Info (Rating + Tags + Date) */
+    .work-info__meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .work-info__tags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .tag {
+      padding: 6px 16px;
+      border-radius: 8px;
+      background: rgba(99,102,241,0.2);
+      color: #a5b4fc;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .work-info__date {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .work-info__date .date-icon {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.7);
+      flex-shrink: 0;
+    }
+    .work-info__rating {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .rating-stars {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #f59e0b;
+    }
+    .rating-stars svg {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .rating-stars__text {
+      font-size: 15px;
+      color: #f59e0b;
+      font-weight: 600;
+    }
+
+    /* Work Gallery Card */
+    .work-gallery-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+    }
+    .gallery-card__desc {
+      font-size: 15px;
+      color: #666;
+      line-height: 1.8;
+      margin-bottom: 28px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    /* Gallery List */
+    .gallery-list {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .gallery-item {
+      border-radius: 20px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .gallery-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.1);
+    }
+    .gallery-item img {
+      width: 100%;
+      display: block;
+    }
+
+    /* ========== Footer ========== */
+    .footer {
+      background: #111827; color: #fff;
+      padding: 80px 24px 48px;
+      text-align: center;
+    }
+    .footer__logo {
+      width: 64px; height: 64px; border-radius: 18px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      display: inline-flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 800; font-size: 28px;
+      margin-bottom: 28px;
+    }
+    .footer__slogan {
+      font-size: 17px; color: rgba(255,255,255,0.6);
+      line-height: 1.9; max-width: 480px; margin: 0 auto;
+    }
+    .footer__divider {
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      border-radius: 2px; margin: 32px auto;
+    }
+    .footer__copy {
+      font-size: 14px; color: rgba(255,255,255,0.35);
+    }
+
+    /* ========== Responsive ========== */
+    @media (max-width: 900px) {
+      .navbar { padding: 0 24px; }
+      .navbar__title { font-size: 17px; }
+      .nav__menu { display: none; }
+      .navbar__hamburger { display: flex; }
+      .dropdown-menu { right: 16px; }
+      .detail-hero { margin-top: 68px; }
+      .detail-container { padding: 24px 48px 60px 48px; max-width: 100%; }
+      .work-detail-card { padding: 24px 0 32px 0; border-radius: 0 0 24px 24px; width: 100%; }
+      .work-detail-card__inner { padding: 0 48px; }
+      .work-gallery-card { padding: 24px; }
+      .work-info__title { font-size: 26px; margin-bottom: 12px; }
+      .work-info__meta { flex-wrap: wrap; gap: 12px; justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      .navbar { height: 56px; padding: 0 16px; }
+      .navbar__logo-icon { width: 34px; height: 34px; }
+      .navbar__title { font-size: 16px; }
+      .navbar__hamburger { display: flex; }
+      .dropdown-menu { top: 56px; width: 210px; }
+      .detail-hero { margin-top: 56px; }
+      .detail-container { padding: 16px 16px 60px 16px; max-width: 100%; }
+      .back-btn { padding: 8px 14px; font-size: 13px; margin-bottom: 28px; }
+      .work-detail-card { padding: 20px 0 32px 0; border-radius: 0 0 20px 20px; width: 100%; }
+      .work-detail-card__inner { padding: 0 16px; }
+      .work-gallery-card { padding: 20px; border-radius: 20px; }
+      .gallery-card__desc { font-size: 14px; margin-bottom: 20px; padding-bottom: 20px; }
+      .work-info__title { font-size: 22px; margin-bottom: 12px; text-align: center; }
+      .work-info__meta { flex-direction: column; align-items: center; gap: 10px; }
+      .tag { padding: 5px 12px; font-size: 12px; }
+      .gallery-item { border-radius: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== Navigation Bar ========== -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar__logo">
+      <div class="navbar__logo-icon">
+        <img src="images/logo.png" alt="Logo">
+      </div>
+      <span class="navbar__title">兰博的设计小摊</span>
+    </a>
+
+    <!-- PC 横向菜单 -->
+    <div class="nav__menu">
+      <a href="index.html" class="nav__menu-item">
+        <span class="menu-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </span>
+        首页
+      </a>
+      <a href="about.html" class="nav__menu-item">
+        <span class="menu-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </span>
+        关于我
+      </a>
+      <a href="portfolio.html" class="nav__menu-item active">
+        <span class="menu-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </span>
+        作品集
+      </a>
+      <a href="article.html" class="nav__menu-item">
+        <span class="menu-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </span>
+        文章
+      </a>
+      <a href="contact.html" class="nav__menu-item">
+        <span class="menu-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </span>
+        联系我
+      </a>
+    </div>
+
+    <!-- Mobile 汉堡按钮 -->
+    <button class="navbar__hamburger" id="hamburger" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Dropdown Menu -->
+  <div class="dropdown-menu" id="dropdownMenu">
+    <a href="index.html" class="dropdown-menu__item">
+      <span class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </span>
+      首页
+    </a>
+    <a href="about.html" class="dropdown-menu__item">
+      <span class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </span>
+      关于我
+    </a>
+    <a href="portfolio.html" class="dropdown-menu__item active">
+      <span class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </span>
+      作品集
+    </a>
+    <a href="article.html" class="dropdown-menu__item">
+      <span class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </span>
+      文章
+    </a>
+    <a href="contact.html" class="dropdown-menu__item">
+      <span class="menu-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </span>
+      联系我
+    </a>
+  </div>
+
+  <!-- ========== Detail Content ========== -->
+  <div class="detail-hero">
+    <div class="work-detail-card">
+      <div class="work-detail-card__inner">
+        <div class="work-detail-card__header">
+          <a href="portfolio.html" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/>
+              <polyline points="12 19 5 12 12 5"/>
+            </svg>
+            返回
+          </a>
+          <h1 class="work-info__title" id="workTitle">加载中...</h1>
+          <div class="work-info__meta">
+            <div class="work-info__rating">
+              <div class="rating-stars" id="ratingStars"></div>
+              <span class="rating-stars__text" id="ratingText"></span>
+            </div>
+            <div class="work-info__tags" id="workTags"></div>
+            <div class="work-info__date" id="workDate"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail-container">
+    <div class="work-gallery-card">
+      <p class="gallery-card__desc" id="workDesc"></p>
+      <div class="gallery-list" id="galleryList"></div>
+    </div>
+  </div>
+
+  <!-- ========== Footer ========== -->
+  <footer class="footer">
+    <div class="footer__logo">
+      <img src="images/logo-white@1x.png" alt="Logo">
+    </div>
+    <p class="footer__slogan">
+      专注于用户体验设计与前端开发的独立设计师，<br/>致力于创造有价值的数字产品。
+    </p>
+    <div class="footer__divider"></div>
+    <p class="footer__copy">© 2026 兰博的设计小摊 · All Rights Reserved</p>
+  </footer>
+
+  <!-- ========== JavaScript ========== -->
+  <script>
+    // ========== Portfolio Data (same as portfolio.html) ==========
+    const portfolioData = [
+      {
+        id: 1,
+        title: '智能健康管理 App',
+        desc: '一款面向年轻人的健康管理应用，整合运动追踪、饮食记录、睡眠分析三大核心功能，通过 AI 算法提供个性化健康建议。',
+        cover: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&h=400&fit=crop',
+        gallery: [
+          'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop'
+        ],
+        likes: 326,
+        rating: 4.2,
+        date: '2026-04-28',
+        tags: ['UI设计', '移动端', 'AI赋能']
+      },
+      {
+        id: 2,
+        title: '企业级数据可视化平台',
+        desc: '为中大型企业提供一站式数据可视化解决方案，支持多数据源接入、实时数据大屏、自定义报表生成。',
+        cover: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',
+        gallery: [
+          'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&h=600&fit=crop'
+        ],
+        likes: 289,
+        rating: 3.8,
+        date: '2026-04-15',
+        tags: ['数据可视化', 'Web端', '中后台']
+      },
+      {
+        id: 3,
+        title: '跨境电商小程序',
+        desc: '面向东南亚市场的跨境电商微信小程序，包含商品浏览、多语言切换、智能推荐、跨境支付等完整电商功能。',
+        cover: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop',
+        gallery: [
+          'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=800&h=600&fit=crop'
+        ],
+        likes: 412,
+        rating: 4.9,
+        date: '2026-03-22',
+        tags: ['小程序', '电商', '跨境']
+      },
+      {
+        id: 4,
+        title: '在线教育直播平台',
+        desc: '专为教育机构打造的直播教学平台，支持实时互动、白板标注、屏幕共享、课程录制等教学功能。',
+        cover: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=600&h=400&fit=crop',
+        gallery: [
+          'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&h=600&fit=crop'
+        ],
+        likes: 198,
+        rating: 3.5,
+        date: '2026-03-10',
+        tags: ['在线教育', '直播', 'Web端']
+      },
+      {
+        id: 5,
+        title: '社交分享类 App',
+        desc: '一款以兴趣为核心的社交分享应用，用户可以分享生活方式、发现同好、参与话题讨论。',
+        cover: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=400&fit=crop',
+        gallery: [
+          'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800&h=600&fit=crop'
+        ],
+        likes: 567,
+        rating: 4.6,
+        date: '2026-02-28',
+        tags: ['社交', '移动端', 'UI设计']
+      },
+      {
+        id: 6,
+        title: '智能家居控制后台',
+        desc: '统一的智能家居设备管理平台，支持设备分组、场景联动、定时任务、数据统计等功能。',
+        cover: 'https://images.unsplash.com/photo-1558002038-1055907df827?w=600&h=400&fit=crop',
+        gallery: [
+          'https://images.unsplash.com/photo-1558002038-1055907df827?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1585751119414-ef2636f8aede?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop'
+        ],
+        likes: 234,
+        rating: 4.1,
+        date: '2026-02-15',
+        tags: ['IoT', '中后台', 'Web端']
+      },
+      {
+        id: 7,
+        title: '品牌视觉形象设计',
+        desc: '为新兴茶饮品牌「清茗居」完成从 Logo、VI 手册到门店 SI 系统的全套品牌视觉设计。',
+        cover: 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=600&h=400&fit=crop',
+        gallery: [
+          'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop'
+        ],
+        likes: 445,
+        rating: 4.7,
+        date: '2026-01-30',
+        tags: ['品牌设计', 'VI', '平面']
+      },
+      {
+        id: 8,
+        title: '旅行规划助手小程序',
+        desc: '帮助用户规划旅行行程的智能小程序，支持景点推荐、路线规划、酒店预订、行程分享。',
+        cover: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&h=400&fit=crop',
+        gallery: [
+          'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&h=600&fit=crop'
+        ],
+        likes: 356,
+        rating: 4.3,
+        date: '2026-01-18',
+        tags: ['小程序', '旅行', 'AI推荐']
+      },
+      {
+        id: 9,
+        title: '企业官网重设计',
+        desc: '为科技创业公司重新设计官网，优化信息架构与视觉体验，提升品牌调性与转化率。',
+        cover: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop',
+        gallery: [
+          'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=600&fit=crop',
+          'https://images.unsplash.com/photo-1559028012-481c04fa702d?w=800&h=600&fit=crop'
+        ],
+        likes: 178,
+        rating: 3.2,
+        date: '2025-12-25',
+        tags: ['官网', 'Web端', '品牌']
+      }
+    ];
+
+    // ========== DOM Elements ==========
+    const hamburger = document.getElementById('hamburger');
+    const dropdown = document.getElementById('dropdownMenu');
+    const workTitle = document.getElementById('workTitle');
+    const workTags = document.getElementById('workTags');
+    const workDate = document.getElementById('workDate');
+    const workDesc = document.getElementById('workDesc');
+    const ratingStars = document.getElementById('ratingStars');
+    const ratingText = document.getElementById('ratingText');
+    const galleryList = document.getElementById('galleryList');
+
+    // ========== Initialize ==========
+    document.addEventListener('DOMContentLoaded', () => {
+      initHamburger();
+      loadWorkDetail();
+    });
+
+    // ========== Hamburger Menu ==========
+    function initHamburger() {
+      hamburger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hamburger.classList.toggle('active');
+        dropdown.classList.toggle('show');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target) && !hamburger.contains(e.target)) {
+          hamburger.classList.remove('active');
+          dropdown.classList.remove('show');
+        }
+      });
+
+      dropdown.querySelectorAll('.dropdown-menu__item').forEach(item => {
+        item.addEventListener('click', () => {
+          hamburger.classList.remove('active');
+          dropdown.classList.remove('show');
+        });
+      });
+    }
+
+    // ========== Load Work Detail ==========
+    function loadWorkDetail() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const workId = parseInt(urlParams.get('id')) || 1;
+
+      const work = portfolioData.find(item => item.id === workId) || portfolioData[0];
+
+      // Update page title
+      document.title = `${work.title} - 兰博的设计小摊`;
+
+      // Update work info
+      workTitle.textContent = work.title;
+
+      // Update description
+      workDesc.textContent = work.desc;
+
+      // Render rating (single star + number)
+      ratingStars.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+      ratingText.textContent = work.rating.toFixed(1);
+
+      // Update date
+      const dateObj = new Date(work.date);
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      workDate.innerHTML = `<span class="date-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>${year}.${month}.${day}`;
+
+      // Update tags
+      workTags.innerHTML = work.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+
+      // Update gallery
+      galleryList.innerHTML = work.gallery.map((img, index) => `
+        <div class="gallery-item">
+          <img src="${img}" alt="${work.title} - 图片 ${index + 1}">
+        </div>
+      `).join('');
+    }
+
+    // ========== Navbar Shadow ==========
+    const navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', () => {
+      navbar.style.boxShadow = window.scrollY > 20
+        ? '0 2px 20px rgba(0,0,0,0.08)'
+        : '0 1px 0 rgba(0,0,0,0.06)';
+    });
+  </script>
+</body>
+</html>
