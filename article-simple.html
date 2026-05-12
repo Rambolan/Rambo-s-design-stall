@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>文章列表（纯HTML版）- 兰博的设计小摊</title>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; background: #f0f2f5; padding: 40px; }
+    h1 { margin-bottom: 30px; color: #1a1a2e; }
+    .article-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+    .article-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .article-card h2 { font-size: 20px; margin-bottom: 12px; color: #1a1a2e; }
+    .article-card p { font-size: 14px; color: #666; line-height: 1.6; }
+    .article-card a { color: #6366f1; text-decoration: none; font-weight: 600; display: inline-block; margin-top: 12px; }
+    .article-card a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>📝 文章列表（纯 HTML 测试版）</h1>
+  
+  <div class="article-list">
+    <div class="article-card">
+      <h2>用 AI 开发个人网站——从创意到上线的完整实录</h2>
+      <p>记录使用 AI 助手从零开始开发个人作品集网站的完整过程...</p>
+      <a href="article-detail.html?id=9">阅读全文 →</a>
+    </div>
+
+    <div class="article-card">
+      <h2>AI 辅助设计工作流：从 Figma 到代码的完整实践</h2>
+      <p>探讨如何利用 AI 工具将设计稿自动转换为高质量前端代码...</p>
+      <a href="article-detail.html?id=1">阅读全文 →</a>
+    </div>
+
+    <div class="article-card">
+      <h2>用户体验设计的核心原则与实践</h2>
+      <p>深入探讨 UX 设计中的五大核心原则...</p>
+      <a href="article-detail.html?id=2">阅读全文 →</a>
+    </div>
+  </div>
+
+  <p style="margin-top: 40px; color: #666;">
+    ⚠️ 如果你能看到这个页面，说明基本 HTML 是正常的。<br>
+    如果 <a href="article.html">article.html</a> 一直加载中，说明 JavaScript 有语法错误。
+  </p>
+</body>
+</html>
