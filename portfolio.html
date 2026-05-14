@@ -287,6 +287,7 @@
       overflow: hidden;
       box-shadow: 0 2px 16px rgba(0,0,0,0.04);
       transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s;
+      cursor: pointer;
     }
     .portfolio__grid .portfolio-card:hover {
       transform: translateY(-8px);
@@ -379,6 +380,7 @@
       overflow: hidden;
       box-shadow: 0 2px 16px rgba(0,0,0,0.04);
       transition: all 0.3s;
+      cursor: pointer;
     }
     .portfolio__list .portfolio-card:hover {
       transform: translateX(8px);
@@ -728,94 +730,74 @@
     // ========== Data ==========
     const portfolioData = [
       {
+        id: 9,
+        title: '考证通 APP',
+        desc: '考证通 APP，是一款集合了课程视频、考试、刷题、备考资料下载等一系列功能的 APP。',
+        cover: 'images/kzt/封面.webp',
+        likes: 450,
+        rating: 4.5,
+        date: '2026-05-14',
+        tags: ['墨刀', 'MasterGO']
+      },
+      {
+        id: 10,
+        title: '登腾 APP',
+        desc: '登腾APP是集合了患者咨询端和医生端的综合软件。医生端包含了商场、教育、登腾朋友圈，行业咨询等模块的综合性软件。致力于数据共享，整合牙科领域资源，为牙科发展贡献一个综合性平台。',
+        cover: 'images/dt/封面.webp',
+        likes: 440,
+        rating: 4.4,
+        date: '2026-05-14',
+        tags: ['墨刀', 'MasterGO']
+      },
+      {
         id: 1,
-        title: '智能健康管理 App',
-        desc: '一款面向年轻人的健康管理应用，整合运动追踪、饮食记录、睡眠分析三大核心功能，通过 AI 算法提供个性化健康建议。',
-        cover: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&h=400&fit=crop',
-        likes: 326,
-        rating: 4.2,
-        date: '2026-04-28',
-        tags: ['UI设计', '移动端', 'AI赋能']
+        title: '社交新零售',
+        desc: '社交新零售是一款聚合社交和商品双重属性的"轻电商"平台，内含丰富的全品类商品，帮助店主零成本打造自己的新零售小店，并获得最高30%的销售返利，购物省钱，分享赚钱的平台。',
+        cover: 'images/sjxls/30.webp',
+        likes: 480,
+        rating: 4.8,
+        date: '2026-05-14',
+        tags: ['墨刀', 'MasterGO']
       },
       {
         id: 2,
-        title: '企业级数据可视化平台',
-        desc: '为中大型企业提供一站式数据可视化解决方案，支持多数据源接入、实时数据大屏、自定义报表生成。',
-        cover: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',
-        likes: 289,
-        rating: 3.8,
-        date: '2026-04-15',
-        tags: ['数据可视化', 'Web端', '中后台']
+        title: '行家远程工作平台解决方案',
+        desc: '行家是全球领先的远程工作交易平台，致力于为全球企业和自由职业者提供数字化的在线工作交易服务。行家远程工作平台通过数字人AI算法，在全球范围内为企业匹配优质的专职远程人才，在线雇佣。包含大多数可以独立完成的工作岗位，如设计、运营、法务、软件、财税、知产等。平台为企业免费提供用人需求发布、人才匹配、视频面试、在线签约、薪资托管、工作台管理、智能考勤、薪酬结算、合规开票、双向评价等远程用工闭环服务。',
+        cover: 'images/hj/封面.webp',
+        likes: 470,
+        rating: 4.7,
+        date: '2026-05-14',
+        tags: ['墨刀', 'MasterGO']
       },
       {
         id: 3,
-        title: '跨境电商小程序',
-        desc: '面向东南亚市场的跨境电商微信小程序，包含商品浏览、多语言切换、智能推荐、跨境支付等完整电商功能。',
-        cover: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop',
-        likes: 412,
-        rating: 4.9,
-        date: '2026-03-22',
-        tags: ['小程序', '电商', '跨境']
+        title: '研祥智慧能效监控系统',
+        desc: '通过对园区硬件设备进行物联网化的管理和监控，对园区内水、电、空调使用的数据进行实时采集，由原来的人工抄表升级为远程智能抄表，实现数据化、可视化、配置化的监督管理。园区管理员能够实时查看园区内能源的使用情况，收费情况，对相关硬件以及用户进行异常监控预警，从而达到节省企业人力，降低出错率，提高工作效率的目的。',
+        cover: 'images/yx/封面.webp',
+        likes: 430,
+        rating: 4.3,
+        date: '2026-05-14',
+        tags: ['墨刀', 'MasterGO']
       },
       {
         id: 4,
-        title: '在线教育直播平台',
-        desc: '专为教育机构打造的直播教学平台，支持实时互动、白板标注、屏幕共享、课程录制等教学功能。',
-        cover: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=600&h=400&fit=crop',
-        likes: 198,
-        rating: 3.5,
-        date: '2026-03-10',
-        tags: ['在线教育', '直播', 'Web端']
+        title: '代言家企业官网',
+        desc: '代言+是一个基于实体异业联盟的社交新零售电商平台，是小程序研发巨头盈客通2019年倾力打造的社交新零售电商平台，刚刚上线就获得数千万的天使轮投资。2019年，是社交新零售的元年，顺应趋势，代言+应运而生。',
+        cover: 'images/dyj/封面.webp',
+        likes: 420,
+        rating: 4.2,
+        date: '2026-05-14',
+        tags: ['墨刀', 'MasterGO']
       },
       {
         id: 5,
-        title: '社交分享类 App',
-        desc: '一款以兴趣为核心的社交分享应用，用户可以分享生活方式、发现同好、参与话题讨论。',
-        cover: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=400&fit=crop',
-        likes: 567,
-        rating: 4.6,
-        date: '2026-02-28',
-        tags: ['社交', '移动端', 'UI设计']
-      },
-      {
-        id: 6,
-        title: '智能家居控制后台',
-        desc: '统一的智能家居设备管理平台，支持设备分组、场景联动、定时任务、数据统计等功能。',
-        cover: 'https://images.unsplash.com/photo-1558002038-1055907df827?w=600&h=400&fit=crop',
-        likes: 234,
-        rating: 4.1,
-        date: '2026-02-15',
-        tags: ['IoT', '中后台', 'Web端']
-      },
-      {
-        id: 7,
-        title: '品牌视觉形象设计',
-        desc: '为新兴茶饮品牌「清茗居」完成从 Logo、VI 手册到门店 SI 系统的全套品牌视觉设计。',
-        cover: 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=600&h=400&fit=crop',
-        likes: 445,
-        rating: 4.7,
-        date: '2026-01-30',
-        tags: ['品牌设计', 'VI', '平面']
-      },
-      {
-        id: 8,
-        title: '旅行规划助手小程序',
-        desc: '帮助用户规划旅行行程的智能小程序，支持景点推荐、路线规划、酒店预订、行程分享。',
-        cover: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&h=400&fit=crop',
-        likes: 356,
-        rating: 4.3,
-        date: '2026-01-18',
-        tags: ['小程序', '旅行', 'AI推荐']
-      },
-      {
-        id: 9,
-        title: '企业官网重设计',
-        desc: '为科技创业公司重新设计官网，优化信息架构与视觉体验，提升品牌调性与转化率。',
-        cover: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop',
-        likes: 178,
-        rating: 3.2,
-        date: '2025-12-25',
-        tags: ['官网', 'Web端', '品牌']
+        title: '日常练习',
+        desc: '平日的练习，各种类型的都有。',
+        cover: 'images/practice/封面.webp',
+        likes: 400,
+        rating: 4.0,
+        date: '2026-05-14',
+        tags: ['墨刀', 'MasterGO', 'PhotoShop', 'Illustrator']
       }
     ];
 
